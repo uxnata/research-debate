@@ -89,7 +89,10 @@ research-debate/
 
 Для настоящего adversarial review используйте разные модели:
 - **Executor** (Адвокат пользователя + Адвокат бизнеса): Claude Code (текущая сессия)
-- **Reviewer** (Критик): GPT-5.4 xhigh через Codex MCP или OpenRouter MCP
+- **Reviewer** (Критик): внешняя модель через OpenRouter API (curl)
+
+Требования:
+- Переменная окружения `OPENROUTER_API_KEY`
 
 Это устраняет проблему self-review blind spots.
 
@@ -107,7 +110,7 @@ research-debate/
 
 4. Прочитай оба файла из раунда 1
 5. Проверь `CROSS_MODEL_CRITIC` в CLAUDE.md:
-   - Если `true` → выполни `/cross-model-critic` (GPT-5 или другая модель через MCP)
+   - Если `true` → выполни `/cross-model-critic` (внешняя модель через OpenRouter curl)
    - Если `false` → выполни `/critic` (self-review, менее надёжно)
 6. Запиши результат в `output/round2-critic.json`
 
@@ -141,7 +144,7 @@ research-debate/
 ## Research Debate Config
 
 CROSS_MODEL_CRITIC: true          # Критик через внешнюю модель
-CRITIC_MODEL: codex-mcp           # или openrouter-mcp  
+CRITIC_MODEL: openai/gpt-4o      # модель OpenRouter для критики
 AUTO_PROCEED: false               # true = без чекпоинтов
 MAX_ROUNDS: 3                     # максимум раундов дебатов
 LANGUAGE: ru                      # язык вывода

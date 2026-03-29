@@ -30,34 +30,25 @@
 ## Конфигурация
 
 CROSS_MODEL_CRITIC: true           # Критик через внешнюю модель (рекомендуется)
-CRITIC_MCP: codex-cli              # codex-cli | openrouter | gemini-cli
+CRITIC_MODEL: openai/gpt-4o       # модель OpenRouter для критики
+OPENROUTER_API_KEY: env            # ключ передаётся через переменную окружения $OPENROUTER_API_KEY
 AUTO_PROCEED: false                # true = без чекпоинтов
 MAX_ROUNDS: 3                      # максимум раундов дебатов
 LANGUAGE: ru                       # язык вывода
 
-## MCP серверы
+## Cross-Model Critic
 
-Настроены в `.mcp.json`. Для cross-model критики нужен хотя бы один:
+Для cross-model критики используется OpenRouter API через curl (без MCP).
 
-### Вариант A: Codex CLI (GPT-5, бесплатно с ChatGPT подпиской)
+**Настройка:**
 ```bash
-npm install -g @openai/codex
-claude mcp add -s user codex-cli -- npx -y codex-cli-mcp-tool
+export OPENROUTER_API_KEY="ваш-ключ"
 ```
-Переменная окружения: `OPENAI_API_KEY`
 
-### Вариант B: OpenRouter (любая модель)
-```bash
-claude mcp add -s user openrouter -- npx -y openrouter-mcp
-```
-Переменная окружения: `OPENROUTER_API_KEY`
-
-### Вариант C: Gemini
-```bash
-npm install -g gemini-mcp-tool
-claude mcp add -s user gemini-cli -- npx -y gemini-mcp-tool
-```
-Аутентификация через Google аккаунт.
+**Поддерживаемые модели** (задаются через `CRITIC_MODEL`):
+- `openai/gpt-4o` — хороший баланс (по умолчанию)
+- `google/gemini-2.0-flash-thinking` — сильный в логике
+- `meta-llama/llama-3.3-70b` — open source альтернатива
 
 ## Правила
 
