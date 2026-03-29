@@ -1,0 +1,20 @@
+{
+  "mcpServers": {
+    "codex-cli": {
+      "command": "npx",
+      "args": ["-y", "codex-cli-mcp-tool"],
+      "env": {
+        "OPENAI_API_KEY": "${OPENAI_API_KEY}",
+        "CODEX_MODEL": "gpt-5",
+        "CODEX_SANDBOX_MODE": "read-only"
+      }
+    },
+    "openrouter": {
+      "command": "npx",
+      "args": ["-y", "openrouter-mcp"],
+      "env": {
+        "OPENROUTER_API_KEY": "${OPENROUTER_API_KEY}"
+      }
+    }
+  }
+}
