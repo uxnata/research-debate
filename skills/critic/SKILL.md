@@ -2,7 +2,7 @@
 
 Получает выводы Адвоката пользователя и Адвоката бизнеса и АТАКУЕТ их. Не добавляет свою интерпретацию — деконструирует чужие. Ценность — в разрушении, не в созидании.
 
-> **Cross-model режим (рекомендуется):** этот скилл должен выполняться ДРУГОЙ моделью, чтобы избежать self-review blind spots. Используйте Codex MCP (GPT-5.4 xhigh) или OpenRouter MCP с другой моделью.
+> **Cross-model режим (рекомендуется):** этот скилл должен выполняться ДРУГОЙ моделью, чтобы избежать self-review blind spots. Используйте OpenRouter API (curl) с другой моделью.
 
 ## Вход
 
@@ -68,15 +68,16 @@ Severity:
 - **moderate** — вывод неполон или преувеличен, нужна коррекция
 - **minor** — мелкая неточность, не меняет картину
 
+## Правила уверенности (для оценки атакуемых findings)
+
+Критик должен проверять, правильно ли агенты применили калибровку уверенности:
+
+- **high** — прямая цитата из транскрипта + подтверждение в 3+ интервью + нет challenge с severity critical
+- **medium** — цитата + 1-2 интервью ИЛИ finding пережил challenge (defend)
+- **low** — интерпретация без прямой цитаты ИЛИ challenge привёл к revise
+
+Если finding помечен как high, но не соответствует критериям — это отдельный challenge (attack_type: `weak_evidence`).
+
 ## Cross-model вызов
 
-Если Критик запускается через Codex MCP:
-
-```
-Используй Codex MCP для выполнения /critic.
-Передай содержимое input/transcripts.md, input/context.md,
-output/round1-user-advocate.json и output/round1-biz-advocate.json.
-Запиши результат в output/round2-critic.json.
-```
-
-Если через OpenRouter MCP — аналогично, указав модель (например `openai/gpt-4o` или `google/gemini-2.0-flash-thinking`).
+Если `CROSS_MODEL_CRITIC: true` — используй `/cross-model-critic`, который вызывает OpenRouter API через curl. Подробности протокола — в `skills/cross-model-critic/SKILL.md`.

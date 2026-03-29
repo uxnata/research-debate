@@ -116,7 +116,9 @@ research-debate/
 
 > **Рекомендация:** всегда используй cross-model. Self-review создаёт слепые зоны (Claude критикует свои же паттерны мышления).
 
-### Чекпоинт: Человек
+### Чекпоинт: Человек или Авто-фокус
+
+#### Если AUTO_PROCEED: false (по умолчанию)
 
 6. Выведи сводку в консоль:
    - Сколько challenges от Критика
@@ -125,16 +127,35 @@ research-debate/
 7. Спроси человека: "Какое направление для следующего раунда?" (или "Завершить?")
 8. Запиши ответ в `output/human-direction.md`
 
-### Раунд 3: Ответы
+#### Если AUTO_PROCEED: true
 
-9. Прочитай критику и направление человека
+6. Критик генерирует поле `"recommended_focus"` в своём JSON-выходе — это становится направлением для раунда 3
+7. Запиши `recommended_focus` в `output/human-direction.md`
+8. Цикл продолжается автоматически, пока:
+   - Есть challenges с severity `critical` И текущий раунд < MAX_ROUNDS
+9. Стоп-условия (переход к синтезу):
+   - Все critical challenges получили ответ `defend` или `refine` — агенты отстояли позиции
+   - Достигнут MAX_ROUNDS
+   - Нет critical challenges
+10. Если в ответах на критику появились НОВЫЕ critical challenges (от следующего раунда критики) — ещё раунд
+
+### Раунд 3+: Ответы
+
+9. Прочитай критику и направление (от человека или auto-focus)
 10. Выполни `/user-advocate` в режиме ответа — `output/round3-user-advocate.json`
 11. Выполни `/biz-advocate` в режиме ответа — `output/round3-biz-advocate.json`
 
+> При AUTO_PROCEED: true и наличии critical challenges → повторная критика → повторные ответы (до MAX_ROUNDS).
+
+### Evidence Verification
+
+12. Выполни `/evidence-verifier` — проверь все цитаты в findings
+13. Запиши результат в `output/evidence-verification.json`
+
 ### Синтез
 
-12. Выполни `/synthesis` — собери все раунды в финальный отчёт
-13. Запиши `output/RESEARCH_REPORT.md`
+14. Выполни `/synthesis` — собери все раунды в финальный отчёт
+15. Запиши `output/RESEARCH_REPORT.md`
 
 ## Конфигурация
 
@@ -157,9 +178,10 @@ output/
 ├── round1-user-advocate.json    # анализ Agent A
 ├── round1-biz-advocate.json     # анализ Agent B
 ├── round2-critic.json           # критика Agent C
-├── human-direction.md           # направление от человека
+├── human-direction.md           # направление от человека (или auto-focus)
 ├── round3-user-advocate.json    # ответ A на критику
 ├── round3-biz-advocate.json     # ответ B на критику
+├── evidence-verification.json   # верификация цитат
 ├── RESEARCH_REPORT.md           # финальный отчёт
 ├── DIVERGENCE_MAP.md            # нерешённые расхождения
 └── ASSUMPTIONS_LOG.md           # все допущения агентов
