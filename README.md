@@ -1,4 +1,4 @@
-# 🔬 Research Debate Lab
+# Research Debate Lab
 
 Мультиагентные дебаты для продуктовых исследований.
 
